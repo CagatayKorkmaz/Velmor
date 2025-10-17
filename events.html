@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Velmor - Olaylar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link rel="icon" href="content/velmor.png" type="image/png">
+<link rel="shortcut icon" href="content/velmor.png" type="image/png">
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#D4AF37",
+          "background-light": "#F5F5F5",
+          "background-dark": "#0a0a0a",
+        },
+        fontFamily: {
+          display: ["Cinzel", "serif"],
+          body: ["EB Garamond", "serif"],
+        },
+        borderRadius: {
+          DEFAULT: "0.5rem",
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body {
+    background-image: url('content/eventsbg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+</style>
+</head>
+<body class="bg-background-dark text-white font-display">
+  <div class="min-h-screen bg-black bg-opacity-60 backdrop-blur-sm">
+    <header class="py-6 px-4 sm:px-6 lg:px-8">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="select-none text-4xl font-bold tracking-wider hover:text-primary transition-colors duration-300">OLAYLAR</h1>
+        <nav>
+          <a href="index.html" class="text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Anasayfa</a>
+          <a href="kutsal-savas.html" class="text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Kutsal Savaş</a>
+          <a href="wiki/index.html" class="text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Wikipedia</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="mb-12">
+        <div class="relative max-w-lg mx-auto">
+          <input id="search" type="search" placeholder="Hikayelerde Ara..." class="w-full bg-black bg-opacity-30 border border-gray-600 focus:border-primary focus:ring-primary rounded-lg py-3 pl-12 pr-4 text-white placeholder-gray-400 font-display transition-colors duration-300" />
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <span class="material-icons text-gray-400">search</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="stories" class="grid md:grid-cols-2 gap-8"></div>
+      <div id="empty" class="text-center text-gray-400 mt-8 hidden">Aradığınız kriterde hikâye bulunamadı.</div>
+    </main>
+
+    <!-- <footer class="mt-16 py-6 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
+      <div class="container mx-auto text-center text-gray-500">
+        <p>© 2025 Velmor Hikayeleri. Tüm hakları saklıdır.</p>
+      </div>
+    </footer> -->
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('search');
+    const storiesGrid = document.getElementById('stories');
+    const emptyMsg = document.getElementById('empty');
+
+    function normalize(str) {
+      return (str || '').toLowerCase();
+    }
+
+    function renderStories(stories) {
+      storiesGrid.innerHTML = '';
+      stories.forEach(story => {
+        const card = document.createElement('a');
+        card.href = story.file;
+        card.target = '_blank';
+        card.className = 'block bg-black bg-opacity-50 p-6 rounded-lg border border-gray-700 hover:border-primary hover:-translate-y-2 transition-all duration-300 shadow-lg cursor-pointer h-full flex flex-col';
+        card.innerHTML = `
+          <div class="flex items-center mb-4">
+            <span class="material-icons text-primary mr-3 text-2xl">${story.icon || 'auto_stories'}</span>
+            <h2 class="text-xl font-bold tracking-wide">${story.title}</h2>
+          </div>
+          <p class="text-gray-300 leading-relaxed text-base flex-grow font-body">${story.excerpt}</p>
+        `;
+        storiesGrid.appendChild(card);
+      });
+    }
+
+    function filterStories(query) {
+      const cards = Array.from(document.querySelectorAll('#stories a'));
+      const q = normalize(query);
+      let visible = 0;
+      cards.forEach(card => {
+        const title = normalize(card.querySelector('h2').textContent);
+        const excerpt = normalize(card.querySelector('p').textContent);
+        if (title.includes(q) || excerpt.includes(q)) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+      emptyMsg.classList.toggle('hidden', visible > 0);
+    }
+
+    searchInput.addEventListener('input', e => filterStories(e.target.value));
+
+    fetch('/stories/stories.json')
+      .then(r => r.json())
+      .then(data => renderStories(data))
+      .catch(err => {
+        storiesGrid.innerHTML = '<p class="text-center text-gray-500">Hikayeler yüklenemedi. stories.json dosyasını kontrol edin.</p>';
+      });
+  </script>
+</body>
+</html>

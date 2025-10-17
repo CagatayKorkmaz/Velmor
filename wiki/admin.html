@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRP Wiki Admin</title>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cinzel', serif;
+      background: #181818;
+      color: #eee;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    aside {
+      width: 280px;
+      background: rgba(24,24,24,0.95);
+      padding: 1rem;
+      border-right: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* contain internal scroll */
+    }
+    /* Make only the page list scroll */
+    #page-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 8px;
+      scrollbar-width: thin; /* Firefox */
+      scrollbar-color: #444 transparent; /* Firefox */
+    }
+    /* WebKit scrollbars */
+    #page-list::-webkit-scrollbar { width: 8px; }
+    #page-list::-webkit-scrollbar-track { background: transparent; }
+    #page-list::-webkit-scrollbar-thumb { background: #444; border-radius: 6px; }
+    #page-list::-webkit-scrollbar-thumb:hover { background: #555; }
+    main {
+      flex: 1;
+      padding: 1.25rem 2rem;
+      overflow-y: auto;
+      background: #121212;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #2a2a2a;
+      color: #fff;
+      transition: background 0.15s ease;
+    }
+    button:hover { background: #3a3a3a; }
+    .btn { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid #333; background:#222; color:#fff; cursor:pointer; }
+    .btn:hover { background:#2a2a2a; }
+    .btn-primary { background:#1565c0; border-color:#0d47a1; }
+    .btn-primary:hover { background:#0d47a1; }
+    .btn-danger { background:#b71c1c; border-color:#7f0000; }
+    .btn-danger:hover { background:#7f0000; }
+    .page-item {
+      cursor: pointer;
+      padding: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+    .page-item:hover {
+      background: #333;
+    }
+    .page-item.selected {
+      background: #2a2a2a;
+      border-left: 3px solid #1565c0;
+      font-weight: 600;
+    }
+    input, textarea, select {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #eee;
+      border-radius: 6px;
+    }
+    .muted { color: #bbb; font-size: 0.9rem; }
+    /* Toasts */
+    #toastContainer { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 9999; }
+    .toast { background: #222; color: #fff; padding: 10px 12px; border-radius: 6px; border: 1px solid #333; box-shadow: 0 6px 24px rgba(0,0,0,0.4); min-width: 240px; }
+    .toast.success { border-color: #2e7d32; }
+    .toast.error { border-color: #b71c1c; }
+    .toast.info { border-color: #1565c0; }
+  </style>
+</head>
+<body>
+  <aside>
+    <h3>Sayfalar</h3>
+    <input id="page-search" type="text" placeholder="Sayfa ara... (başlık/slug)" style="width:95%;" />
+    <div id="page-list"></div>
+    <button id="new-page" class="btn btn-primary">Yeni Sayfa</button>
+    <button id="logout" class="btn">Çıkış Yap</button>
+  </aside>
+
+  <main>
+    <div style="position:sticky; top:0; z-index:5; background:#121212; padding:6px 0; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid #333;">
+      <h2 id="editor-title" style="margin:0;">Sayfa Seçilmedi</h2>
+      <div style="display:flex; gap:8px;">
+        <button id="save-page" class="btn btn-primary">Kaydet</button>
+        <button id="delete-page" class="btn btn-danger">Sil</button>
+      </div>
+    </div>
+    <label for="page-title" class="muted">Başlık</label>
+    <input id="page-title" placeholder="Başlık">
+    <label for="page-slug" class="muted">Slug</label>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input id="page-slug" placeholder="Slug (örnek: elf-irkı)" style="flex:1;">
+      <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem;">
+        <input type="checkbox" id="slug-lock" checked>
+        Otomatik
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="parentPage">Üst Sayfa (isteğe bağlı)</label>
+      <select id="parentPage">
+        <option value="">Yok</option>
+      </select>
+      <div class="form-group">
+        <label for="tags">Etiketler (virgülle ayırarak yaz)</label>
+        <input type="text" id="tags" placeholder="örnek: karakterler, bölgeler, efsaneler" />
+      </div>
+    </div>
+    <label for="page-status">Durum</label>
+    <select id="page-status">
+      <option value="draft">Taslak</option>
+      <option value="published">Yayında</option>
+    </select>
+    <div id="editor" style="height:560px;background:#fff;color:#000;"></div>
+
+    <!-- Infobox Builder -->
+    <div id="infoboxBuilder" style="margin-top:12px; border:1px solid #333; padding:8px; background: #121212;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong style="color:#fff;">Infobox Builder</strong>
+        <div>
+          <button id="addSectionBtn" type="button">Bölüm Ekle</button>
+          <button id="exportBuilderBtn" type="button">JSON'a Aktar</button>
+        </div>
+      </div>
+      <div id="builderSections"></div>
+    </div>
+    
+
+    <!-- Image upload helper -->
+    <div style="margin-top:12px; padding:10px; border:1px solid #333; background:#101010; border-radius:6px;">
+      <strong>Görsel Yükle (Yardımcı)</strong>
+      <div style="display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+        <input type="file" id="imageUpload" accept="image/*" style="max-width:240px;">
+        <button id="uploadButton" class="btn">Yükle</button>
+        <span id="uploadStatus" class="muted"></span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center; margin-top:8px;">
+        <img id="uploadPreview" alt="Önizleme" style="max-height:120px; display:none; border:1px solid #333;" />
+        <button id="insertUploadedBtn" class="btn btn-primary" style="display:none;">Editöre Ekle</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <div id="toastContainer"></div>
+  <!-- Confirm Modal -->
+  <div id="confirmBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9998;"></div>
+  <div id="confirmModal" style="display:none; position:fixed; inset:0; z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1a1a1a; border:1px solid #333; padding:16px; border-radius:8px; min-width:320px;">
+      <div id="confirmMessage" style="margin-bottom:12px;">Onaylıyor musunuz?</div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button id="confirmNo" class="btn">Vazgeç</button>
+        <button id="confirmYes" class="btn btn-danger">Evet, Sil</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>

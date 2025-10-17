@@ -1,0 +1,344 @@
+/* Genel Sayfa Stilleri */
+body {
+    background-color: #f4f1eb; /* Açık Tema: Göz yormayan, hafif krem rengi */
+    color: #333; /* Açık Tema: Metin rengi */
+    font-family: sans-serif; /* Uzun okumalar için ideal, tırnaklı bir yazı tipi */
+    line-height: 1.7; /* Satırlar arası boşluk, okunabilirliği artırır */
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Tema geçişleri için animasyon */
+}
+
+/* Koyu Tema Stilleri */
+body.dark-mode {
+    background-color: #2c2f33; /* Koyu tema arka plan */
+    color: #e0e0e0; /* Koyu tema metin rengi */
+}
+
+body.dark-mode .hikaye-konteyneri {
+    background-color: #3a3f45; /* Koyu tema içerik kutusu */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #f0f0f0;
+}
+
+body.dark-mode h1 {
+    border-bottom-color: #555;
+}
+
+body.dark-mode h2 {
+    border-left-color: #a0a0a0;
+}
+
+body.dark-mode footer p {
+    color: #b0b0b0;
+}
+
+body.dark-mode .control-button,
+body.dark-mode .action-button {
+    background-color: #555;
+    color: #f0f0f0;
+    border-color: #666;
+}
+
+body.dark-mode .control-button:hover,
+body.dark-mode .action-button:hover {
+    background-color: #666;
+}
+
+body.dark-mode .icindekiler-kutusu, body.dark-mode .ust-kutu {
+    background-color: #3a3f45;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .icindekiler-kutusu ul li a {
+    color: #e0e0e0;
+}
+
+body.dark-mode .icindekiler-kutusu ul li a:hover {
+    color: #f8f8f8;
+}
+
+.control-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.control-button:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+.control-button.print-button {
+    background-color: #7c6e5c; /* Mor tonu */
+    color: white;
+    border-color: #7a6f61;
+}
+
+.control-button.print-button:hover {
+    background-color: #615749;
+    border-color: #7a6f61;
+}
+
+
+/* Ana İçerik Konteyneri (Hikaye ve Yan Menü için) */
+.ana-icerik-konteyneri {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0 auto;
+    gap: 30px; /* Hikaye ve yan menü arası boşluk */
+    padding-top: 80px; /* Üst kontrol butonları için yer açar */
+    width: 100%;
+    max-width: 79vw; /* Toplam genişliği sınırlar */
+}
+.soldiv {
+    width: 300px;
+}
+
+/* Hikayenin içinde bulunduğu ana kutu */
+.hikaye-konteyneri {
+    flex: 1;
+    max-width: 900px;
+    margin: 20px 0;
+    padding: 40px 60px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yan-menu {
+    width: 300px;
+    position: sticky;
+    top: 105px;
+    align-self: flex-start;
+}
+.ust-kutu {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+/* Başlık stilleri için farklı bir font kullanıyoruz */
+h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #1a1a1a;
+    line-height: 1.3;
+}
+
+/* Ana Başlık (Hikaye Adı) */
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 0.2em;
+    border-bottom: 3px solid #e0dace;
+    padding-bottom: 10px;
+}
+
+
+/* Bölüm Başlıkları (I, II, III...) */
+h2 {
+    font-size: 1.8em;
+    margin-top: 2.5em; /* Bölümler arasına daha fazla boşluk koyar */
+    margin-bottom: 1em;
+    border-left: 4px solid #bda88c; /* Başlığın soluna şık bir çizgi ekler */
+    padding-left: 15px;
+}
+
+/* Alt Başlıklar */
+h3 {
+    font-size: 1.4em;
+    color: #313131;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+}
+
+/* Paragraflar */
+#hikaye-icerik p { /* Sadece hikaye içeriğindeki paragrafları etkilemek için */
+    font-size: 1.1em; /* Okunabilir bir metin boyutu */
+    margin-bottom: 1.2em; /* Paragraflar arası boşluk */
+    text-align: justify; /* Paragrafları iki yana yaslayarak daha düzenli bir görünüm sağlar */
+    transition: font-size 0.1s ease; /* Font boyutu değişimi için animasyon */
+}
+
+
+/* Alt Bilgi (Footer) */
+footer {
+    text-align: center;
+    margin-top: 4em;
+    padding-top: 1.5em;
+    border-top: 1px solid #eee;
+    color: #888;
+    font-size: 0.9em;
+}
+
+.icindekiler-kutusu {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, height 0.4s ease-in-out;
+}
+.icindekiler-kutusu.kapali {
+  max-height: 28px;
+}
+
+.icindekiler-kutusu h3{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3em;
+    color: #1a1a1a;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+body.dark-mode .icindekiler-kutusu h3,
+body.dark-mode .hizli-eylemler h4 {
+    color: #f0f0f0;
+}
+
+.icindekiler-kutusu ul {
+    list-style: none; /* Liste işaretlerini kaldır */
+    padding: 0;
+    margin: 0;
+}
+
+.icindekiler-kutusu ul li {
+    margin-bottom: 8px;
+}
+
+.icindekiler-kutusu ul li a {
+    text-decoration: none; /* Alt çizgiyi kaldır */
+    color: #7c6e5c; /* Bağlantı rengi */
+    font-size: 0.95em;
+    display: block; /* Tüm alanı tıklanabilir yapar */
+    padding: 5px 0;
+    transition: color 0.2s ease;
+}
+
+.icindekiler-kutusu ul li a:hover {
+    color: #41392e;
+}
+
+.icindekiler-kutusu ul li.sub-item {
+    padding-left: 20px; /* Alt başlıklar için girinti */
+    font-size: 0.9em;
+}
+
+.hizli-eylemler {
+    display: flex;
+    flex-wrap: wrap; /* Butonların alta geçmesini sağlar */
+    gap: 10px;
+    justify-content: center;
+}
+
+.action-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.action-button:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+/* Mobil cihazlar için küçük ayarlamalar */
+@media (max-width: 1024px) {
+    .ana-icerik-konteyneri {
+        flex-direction: column-reverse;
+        padding-top: 80px;
+        max-width: unset;
+    }
+
+    .hikaye-konteyneri {
+        min-width: unset; /* Minimum genişliği kaldır */
+        margin: 0 auto;
+        padding: 20px;
+        width: calc(100% - 50px); /* Kenar boşluklarını düşerek genişliği ayarlar */
+    }
+
+    .yan-menu {
+        position: static; /* Sabit kalmayı kaldır */
+        width: 95vw;
+        margin: -35px auto; /* Ortalar */
+        padding-top: 0;
+    }
+
+    .control-button {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+}
+
+@media print {
+    .soldiv{
+        display: none;
+    }
+    .top-controls, .yan-menu {
+        display: none; /* Yazdırırken bu elementleri gizle */
+    }
+    body {
+        background-color: #fff;
+        color: #000;
+        display: block;
+        padding: 0;
+    }
+    .ana-icerik-konteyneri {
+        padding-top: 0;
+    }
+    .hikaye-konteyneri {
+        box-shadow: none;
+        margin: 0;
+        padding: 20px;
+        max-width: 100%;
+        width: auto;
+    }
+    body.dark-mode .hikaye-konteyneri {
+        box-shadow: none;
+        margin: 0;
+        padding: 20px;
+        max-width: 100%;
+        width: auto;
+        color: #1a1a1a;
+    }
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3 {
+        color: #000;
+    }
+    #hikaye-icerik p {
+        font-size: 1em !important; /* Yazdırırken font boyutunu sıfırla */
+        line-height: 1.5;
+    }
+}
