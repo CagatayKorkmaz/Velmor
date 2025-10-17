@@ -1,14 +1,14 @@
 [
   {
+    "title": "Kreston İstilası",
+    "excerpt": "Velmor'un ilk istilası ve Kreston'un düşüşü...",
+    "file": "/events/kreston-istilasi.html",
+    "icon": "castle"
+  },
+  {
     "title": "Velmor'un Doğuşu",
     "excerpt": "Valmore ve onun emaneti Enrador'un hikayesi...",
     "file": "/events/velmorun-dogusu.html",
     "icon": "public"
-  },
-  {
-    "title": "Taşların Sırrı",
-    "excerpt": "Soğuk bir sabah, kuzeyin sisleri arasında yola çıktı...",
-    "file": "/pdfs/taslarin-sirri.pdf",
-    "icon": "castle"
   }
 ]
