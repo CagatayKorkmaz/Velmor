@@ -124,7 +124,7 @@
 
     searchInput.addEventListener('input', e => filterStories(e.target.value));
 
-    fetch('/stories/stories.json')
+    fetch('/events/stories.json')
       .then(r => r.json())
       .then(data => renderStories(data))
       .catch(err => {
