@@ -392,7 +392,8 @@ async function loadPage() {
       const tagContainer = document.createElement('p');
       tagContainer.className = 'text-sm text-text-dark';
       tagContainer.dataset.auto = 'tags';
-      tagContainer.innerHTML = 'Etiketler: ' + data.tags
+      const sortedTags = [...data.tags].sort((a, b) => (a || '').localeCompare(b || '', 'tr', { sensitivity: 'base' }));
+      tagContainer.innerHTML = 'Etiketler: ' + sortedTags
         .map(t => `<a class="text-text-dark hover:text-gold" href="tag.html?name=${encodeURIComponent(t)}">${t}</a>`)
         .join(', ');
       tagsBar.appendChild(tagContainer);

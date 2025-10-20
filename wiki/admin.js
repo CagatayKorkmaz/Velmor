@@ -2,6 +2,8 @@ import { supabase } from "./supabase.js";
 
 const pageList = document.getElementById("page-list");
 const pageSearch = document.getElementById("page-search");
+const filterParent = document.getElementById("filter-parent");
+const filterTag = document.getElementById("filter-tag");
 const newBtn = document.getElementById("new-page");
 const logoutBtn = document.getElementById("logout");
 const titleInput = document.getElementById("page-title");
@@ -114,6 +116,12 @@ function slugify(text) {
     .toString()
     .toLowerCase()
     .normalize('NFKD') // remove accents
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/ç/g, 'c')
     .replace(/\s+/g, '-') // spaces to -
     .replace(/[^a-z0-9-_]/g, '') // remove invalid chars
     .replace(/--+/g, '-') // collapse dashes
@@ -191,17 +199,68 @@ async function loadPages() {
     .order("created_at", { ascending: false });
   if (error) return console.error(error);
   allPages = data || [];
+  try {
+    if (filterParent) {
+      const byId = new Map((allPages || []).map(p => [String(p.id), p.title || '(başlıksız)']));
+      const parentIds = Array.from(new Set((allPages || []).map(p => p.parent_id).filter(Boolean))).map(String);
+      const current = filterParent.value;
+      filterParent.innerHTML = '';
+      const optAll = document.createElement('option');
+      optAll.value = '';
+      optAll.textContent = 'Üst: Tümü';
+      filterParent.appendChild(optAll);
+      parentIds.sort((a,b) => (byId.get(a) || '').localeCompare(byId.get(b) || '', 'tr', { sensitivity: 'base' }));
+      parentIds.forEach(id => {
+        const o = document.createElement('option');
+        o.value = id;
+        o.textContent = byId.get(id) || '(başlıksız)';
+        filterParent.appendChild(o);
+      });
+      filterParent.value = current;
+    }
+    if (filterTag) {
+      const current = filterTag.value;
+      const tagSet = new Set();
+      (allPages || []).forEach(p => {
+        if (Array.isArray(p.tags)) p.tags.forEach(t => { if (t) tagSet.add(String(t)); });
+      });
+      const tags = Array.from(tagSet).sort((a,b) => a.localeCompare(b, 'tr', { sensitivity: 'base' }));
+      filterTag.innerHTML = '';
+      const optAll = document.createElement('option');
+      optAll.value = '';
+      optAll.textContent = 'Etiket: Tümü';
+      filterTag.appendChild(optAll);
+      tags.forEach(t => {
+        const o = document.createElement('option');
+        o.value = t;
+        o.textContent = t;
+        filterTag.appendChild(o);
+      });
+      filterTag.value = current;
+    }
+  } catch(_) {}
   renderPageList(allPages);
 }
 
 function applySearchFilter() {
   const q = (pageSearch?.value || "").trim().toLowerCase();
-  if (!q) { renderPageList(allPages); return; }
-  const filtered = allPages.filter(p => {
-    const t = (p.title || "").toLowerCase();
-    const s = (p.slug || "").toLowerCase();
-    return t.includes(q) || s.includes(q);
-  });
+  const parentVal = (filterParent?.value || '').trim();
+  const tagVal = (filterTag?.value || '').trim();
+  let arr = allPages;
+  if (q) {
+    arr = arr.filter(p => {
+      const t = (p.title || "").toLowerCase();
+      const s = (p.slug || "").toLowerCase();
+      return t.includes(q) || s.includes(q);
+    });
+  }
+  if (parentVal) {
+    arr = arr.filter(p => String(p.parent_id || '') === parentVal);
+  }
+  if (tagVal) {
+    arr = arr.filter(p => Array.isArray(p.tags) && p.tags.includes(tagVal));
+  }
+  const filtered = arr;
   renderPageList(filtered);
 }
 
@@ -665,6 +724,8 @@ loadPages();
 
 // Search events
 pageSearch?.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(applySearchFilter, 300); });
+filterParent?.addEventListener('change', applySearchFilter);
+filterTag?.addEventListener('change', applySearchFilter);
 
 window.addEventListener('beforeunload', (e) => {
   if (isDirty) { e.preventDefault(); e.returnValue = ''; }

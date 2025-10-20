@@ -95,6 +95,14 @@
   <aside>
     <h3>Sayfalar</h3>
     <input id="page-search" type="text" placeholder="Sayfa ara... (başlık/slug)" style="width:95%;" />
+    <div style="display:flex; flex-direction:row; gap:8px; margin-top:6px; flex-wrap:wrap;">
+      <select id="filter-parent" style="flex:1; min-width:0;">
+        <option value="">Üst: Tümü</option>
+      </select>
+      <select id="filter-tag" style="flex:1; min-width:0;">
+        <option value="">Etiket: Tümü</option>
+      </select>
+    </div>
     <div id="page-list"></div>
     <button id="new-page" class="btn btn-primary">Yeni Sayfa</button>
     <button id="logout" class="btn">Çıkış Yap</button>
