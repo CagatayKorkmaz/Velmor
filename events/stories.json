@@ -6,6 +6,12 @@
     "icon": "castle"
   },
   {
+    "title": "Novatrion Tahliyesi",
+    "excerpt": "Novatrion'un terk edilişi, yaralıların ve halkın tahliyesi...",
+    "file": "/events/novatrion-istilasi.html",
+    "icon": "dangerous"
+  },
+  {
     "title": "Velmor'un Doğuşu",
     "excerpt": "Valmore ve onun emaneti Enrador'un hikayesi...",
     "file": "/events/velmorun-dogusu.html",
